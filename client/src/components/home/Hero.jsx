@@ -41,7 +41,7 @@ const Hero = () => {
                         </Link>
 
                         <p className='hidden md:block font-medium px-6 py-2 text-black active:scale-95 transition-all rounded-full ' hidden={!user}>
-                            {user.name}
+                            {user?.name}
                         </p>
                         <Link to='/app' className='hidden md:block px-6 py-2 bg-green-500 hover:bg-green-700 active:scale-95 transition-all rounded-full text-white' hidden={!user}>
                             Dashboard
