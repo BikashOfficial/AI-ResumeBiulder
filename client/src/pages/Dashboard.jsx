@@ -187,7 +187,7 @@ const Dashboard = () => {
                     <FilePenLineIcon className='size-6 text-white' />
                   </div>
                   <div className='text-left flex-1 min-w-0'>
-                    <p className='text-white font-base text-lg truncate'>{resume.title}</p>
+                    <p className='text-white font-semibold text-base truncate'>{resume.title}</p>
                     <p className="text-white/80 text-xs">
                       Updated {
                         (() => {
