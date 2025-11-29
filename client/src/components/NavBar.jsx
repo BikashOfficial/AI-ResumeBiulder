@@ -90,34 +90,36 @@ const NavBar = () => {
         </Link>
 
         {/* Center greeting */}
-        <p className='max-sm:hidden text-white/80 font-medium text-sm md:text-base'>
-          Welcome, <span className='text-white font-semibold'>{user?.name}</span>
-        </p>
+        <div className='flex items-center gap-6'>
+          <p className='max-sm:hidden text-black/70 text-lg font-medium'>
+            Hi, <span className='text-black/80 font-medium'>{user?.name}</span>
+          </p>
 
-        {/* Logout button */}
-        <button
-          //onClick={logoutUser}
-          onClick={() => setShowLogout(true)}
-          className='relative flex items-center gap-2 px-5 md:px-7 py-2.5 rounded-full group overflow-hidden transition-all duration-300 active:scale-95 hover:shadow-lg'
-          style={{
-            background: `linear-gradient(135deg, #ef4444, #dc2626)`,
-            boxShadow: `0 4px 15px rgba(239, 68, 68, 0.3)`,
-          }}>
-
-          {/* Hover overlay */}
-          <div
-            className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
+          {/* Logout button */}
+          <button
+            //onClick={logoutUser}
+            onClick={() => setShowLogout(true)}
+            className='relative flex items-center gap-2 px-5 md:px-7 py-2.5 rounded-full group overflow-hidden transition-all duration-300 active:scale-95 hover:shadow-lg'
             style={{
-              background: `linear-gradient(135deg, rgba(255,255,255,0.1), transparent)`,
-            }}
-          />
+              background: `linear-gradient(135deg, #ef4444, #dc2626)`,
+              boxShadow: `0 4px 15px rgba(239, 68, 68, 0.3)`,
+            }}>
 
-          {/* Content */}
-          <div className='relative z-10 flex items-center gap-2'>
-            <LogOut size={20} className='text-white' />
-            <span className='hidden md:block text-white font-semibold'>Logout</span>
-          </div>
-        </button>
+            {/* Hover overlay */}
+            <div
+              className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300'
+              style={{
+                background: `linear-gradient(135deg, rgba(255,255,255,0.1), transparent)`,
+              }}
+            />
+
+            {/* Content */}
+            <div className='relative z-10 flex items-center gap-2'>
+              <LogOut size={20} className='text-white' />
+              <span className='hidden md:block text-white font-semibold'>Logout</span>
+            </div>
+          </button>
+        </div>
 
       </nav>
     </div>

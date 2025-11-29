@@ -47,16 +47,12 @@ const Layout = () => {
   return (
     <div>
       {user ? (
-        <div className='min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-100 relative overflow-hidden'>
+        <div className='min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-100 '>
 
           {/* Navbar */}
           <NavBar />
-
-          {/* Main content with relative positioning */}
-          <div className='relative z-10'>
-            <Outlet />
-          </div>
-
+          <Outlet />
+          
         </div>
       ) : <Login />}
     </div>
