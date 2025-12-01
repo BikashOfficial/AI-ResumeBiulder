@@ -4,7 +4,7 @@ export default function ResultSection({ displayScore, getScoreColor, getScoreLab
   return (
     <div
       className="bg-linear-to-br from-white/20 via-white/60 to-white/20 rounded-3xl shadow-2xl px-6 sm:px-8 py-8 sm:py-12 border-2 border-white backdrop-blur-xl flex flex-col items-center transition-shadow duration-300"
-      style={{ minWidth: "min(280px, 90vw)", willChange: 'contents' }}
+      style={{ minWidth: "min(280px, 90vw)", willChange: 'contents', contain: 'layout style paint' }}
     >
       <div className="mb-2 sm:mb-3">
         <TrendingUp className="size-5 sm:size-6 inline text-purple-500" />
@@ -18,7 +18,8 @@ export default function ResultSection({ displayScore, getScoreColor, getScoreLab
           style={{
             color: getScoreColor(displayScore),
             textShadow: `0 10px 30px ${getScoreColor(displayScore)}40`,
-            willChange: 'color, text-shadow'
+            willChange: 'color',
+            contain: 'layout style paint'
           }}>
           {displayScore}
         </span>
@@ -39,7 +40,8 @@ export default function ResultSection({ displayScore, getScoreColor, getScoreLab
           style={{
             width: `${Math.min(displayScore, 100)}%`,
             background: `linear-gradient(90deg, ${getScoreColor(displayScore)}, #22d3ee)`,
-            willChange: 'width'
+            willChange: 'width',
+            contain: 'layout style paint'
           }}
         ></div>
       </div>

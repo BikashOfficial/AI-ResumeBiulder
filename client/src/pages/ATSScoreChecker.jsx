@@ -108,11 +108,11 @@ export default function ATSScoreChecker() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-8 sm:py-12 px-4 sm:px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-8 sm:py-12 px-4 sm:px-6 relative overflow-hidden" style={{ contain: 'layout style paint' }}>
       {/* Animated background blobs - optimized */}
-      <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{ willChange: 'transform' }}></div>
-      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" style={{ willChange: 'transform' }}></div>
-      <div className="absolute bottom-0 left-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" style={{ willChange: 'transform' }}></div>
+      <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{ willChange: 'transform', contain: 'strict' }}></div>
+      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" style={{ willChange: 'transform', contain: 'strict' }}></div>
+      <div className="absolute bottom-0 left-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" style={{ willChange: 'transform', contain: 'strict' }}></div>
 
       <div className="max-w-4xl mx-auto relative z-10">
 
@@ -215,6 +215,7 @@ export default function ATSScoreChecker() {
 
         .animate-blob {
           animation: blob 7s infinite;
+          transform-origin: center;
         }
 
         .animation-delay-2000 {
@@ -227,6 +228,12 @@ export default function ATSScoreChecker() {
 
         .animate-fade-in {
           animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Optimize scrolling performance */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
       `}</style>
     </div>
