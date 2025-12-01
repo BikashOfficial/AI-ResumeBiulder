@@ -25,13 +25,13 @@ export default function ATSScoreChecker() {
   const [displayScore, setDisplayScore] = useState(0);
   const [analysis, setAnalysis] = useState(null);
 
-  // Number animation effect
+  // Number animation effect - optimized
   useEffect(() => {
     if (score === null) return;
 
     let animationFrame;
     let currentValue = 0;
-    const increment = score / 50; // Adjust speed by changing divisor
+    const increment = score / 30; // Faster animation with fewer frames
 
     const animate = () => {
       if (currentValue < score) {
@@ -109,10 +109,10 @@ export default function ATSScoreChecker() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-8 sm:py-12 px-4 sm:px-6 relative overflow-hidden">
-      {/* Animated background blobs */}
-      <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-0 left-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      {/* Animated background blobs - optimized */}
+      <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{ willChange: 'transform' }}></div>
+      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" style={{ willChange: 'transform' }}></div>
+      <div className="absolute bottom-0 left-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" style={{ willChange: 'transform' }}></div>
 
       <div className="max-w-4xl mx-auto relative z-10">
 
@@ -192,13 +192,13 @@ export default function ATSScoreChecker() {
       <style jsx>{`
         @keyframes blob {
           0%, 100% {
-            transform: translate(0, 0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
           }
           33% {
-            transform: translate(30px, -50px) scale(1.1);
+            transform: translate3d(30px, -50px, 0) scale(1.1);
           }
           66% {
-            transform: translate(-20px, 20px) scale(0.9);
+            transform: translate3d(-20px, 20px, 0) scale(0.9);
           }
         }
 
