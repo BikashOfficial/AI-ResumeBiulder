@@ -64,8 +64,7 @@ const ResumeOptions = ({ onCreateClick, onUploadClick }) => {
 
 
       <Link
-      to={'/app/ats'}
-        onClick={onUploadClick}
+        to={'/app/ats'}
         className="relative flex-1 sm:flex-none py-4 px-3 md:py-6 md:px-8 group overflow-hidden rounded-xl transition-all duration-300 hover:shadow-lg active:scale-95"
         style={{
           background: `linear-gradient(135deg, #7c3aed, #7c3aed)`, // Purple → Deep Purple
