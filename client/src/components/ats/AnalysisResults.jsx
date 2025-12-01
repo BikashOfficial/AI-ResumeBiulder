@@ -42,7 +42,7 @@ export default function AnalysisResults({ analysis }) {
   if (!analysis) return null;
 
   return (
-    <div className="w-full max-w-2xl space-y-6 sm:space-y-8 animate-fade-in" style={{ contain: 'layout style paint' }}>
+    <div className="w-full max-w-2xl space-y-6 sm:space-y-8 animate-fade-in">
 
 
 
@@ -50,7 +50,7 @@ export default function AnalysisResults({ analysis }) {
 
 
       {/* Keywords Found */}
-      <div className="flex gap-3 sm:gap-4 bg-white/40 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white transition-colors duration-200" style={{ contain: 'layout style paint' }}>
+      <div className="flex gap-3 sm:gap-4 bg-white/40 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white hover:bg-white/50 transition-all">
         <CheckCircle className="text-green-600 size-6 sm:size-7 mt-0.5 shrink-0" />
         <div className="flex-1">
           <div className="text-base sm:text-lg font-bold text-green-600 mb-2 sm:mb-3">
@@ -71,7 +71,7 @@ export default function AnalysisResults({ analysis }) {
       </div>
 
       {/* Missing Keywords */}
-      <div className="flex gap-3 sm:gap-4 bg-white/40 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white transition-colors duration-200" style={{ contain: 'layout style paint' }}>
+      <div className="flex gap-3 sm:gap-4 bg-white/40 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white hover:bg-white/35 transition-all">
         <AlertCircle className="text-red-400 size-6 sm:size-7 mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-base sm:text-lg font-bold text-red-500 mb-2 sm:mb-3">
@@ -92,7 +92,7 @@ export default function AnalysisResults({ analysis }) {
       </div>
 
       {/* Improvements */}
-      <div className="flex gap-3 sm:gap-4 bg-white/50 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white transition-colors duration-200" style={{ contain: 'layout style paint' }}>
+      <div className="flex gap-3 sm:gap-4 bg-white/50 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white hover:bg-white/35 transition-all">
         <AlertCircle className="text-orange-400 size-6 sm:size-7 mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-base sm:text-lg font-bold text-orange-500 mb-2 sm:mb-3">
@@ -110,7 +110,7 @@ export default function AnalysisResults({ analysis }) {
       </div>
 
       {/* Summary */}
-      <div className="flex gap-3 sm:gap-4 bg-white/40 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white transition-colors duration-200" style={{ contain: 'layout style paint' }}>
+      <div className="flex gap-3 sm:gap-4 bg-white/40 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border-2 border-white hover:bg-white/50 transition-all">
         <Sparkles className="text-purple-600 size-6 sm:size-7 mt-0.5 shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-base sm:text-lg font-bold text-purple-600 mb-2 sm:mb-3">

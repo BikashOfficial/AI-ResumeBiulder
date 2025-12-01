@@ -108,21 +108,21 @@ export default function ATSScoreChecker() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-8 sm:py-12 px-4 sm:px-6 relative overflow-hidden" style={{ contain: 'layout style paint' }}>
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-8 sm:py-12 px-4 sm:px-6 relative overflow-hidden">
       {/* Animated background blobs - optimized */}
-      <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{ willChange: 'transform', contain: 'strict' }}></div>
-      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" style={{ willChange: 'transform', contain: 'strict' }}></div>
-      <div className="absolute bottom-0 left-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" style={{ willChange: 'transform', contain: 'strict' }}></div>
+      <div className="absolute top-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{ willChange: 'transform' }}></div>
+      <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" style={{ willChange: 'transform' }}></div>
+      <div className="absolute bottom-0 left-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" style={{ willChange: 'transform' }}></div>
 
       <div className="max-w-4xl mx-auto relative z-10">
 
         {/* HEADER */}
         <div className="text-center mb-8 sm:mb-12">
           <div className="flex gap-16">
-            <div onClick={() => navigate(-1)} className=" cursor-pointer inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg transition-shadow duration-300" style={{ contain: 'layout style' }}>
+            <div onClick={() => navigate(-1)} className=" cursor-pointer inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <ArrowLeft className="text-slate-700 size-5 "/>
             </div>
-            <div className=" inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg transition-shadow duration-300" style={{ contain: 'layout style' }}>
+            <div className=" inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <Sparkles className="size-4 text-purple-600 animate-pulse" />
               <span className="text-xs sm:text-sm font-bold text-purple-700 tracking-wider">ATS SCORE CHECKER</span>
             </div>
@@ -134,7 +134,7 @@ export default function ATSScoreChecker() {
         </div>
 
         {/* MAIN CARD SECTION */}
-        <div className= "bg-black/5 backdrop-blur-xl rounded-3xl sm:rounded-2xl border border-white shadow-2xl p-6 sm:p-8 mb-8 space-y-6" style={{ contain: 'layout style paint' }}>
+        <div className= "bg-black/5 backdrop-blur-xl rounded-3xl sm:rounded-2xl border border-white shadow-2xl p-6 sm:p-8 mb-8 space-y-6 transition-all duration-300 hover:shadow-3xl">
 
           {/* UPLOAD + JOB DESCRIPTION */}
           {!score && (
@@ -179,7 +179,7 @@ export default function ATSScoreChecker() {
                   setAnalysis(null);
                   setJobDescription("");
                 }}
-                className="mt-6 sm:mt-10 rounded-full py-3 sm:py-4 px-6 sm:px-8 text-purple-700 bg-linear-to-r from-purple-100/60 to-pink-100/60 font-bold text-base sm:text-lg shadow-lg backdrop-blur-sm border-2 border-white transition-colors duration-300"
+                className="mt-6 sm:mt-10 rounded-full py-3 sm:py-4 px-6 sm:px-8 text-purple-700 bg-linear-to-r from-purple-100/60 to-pink-100/60 font-bold text-base sm:text-lg shadow-lg hover:shadow-xl hover:from-purple-100 hover:to-pink-100 transition-all backdrop-blur-sm border-2 border-white hover:border-white/70"
               >
                 Check Another Resume
               </button>
@@ -215,7 +215,6 @@ export default function ATSScoreChecker() {
 
         .animate-blob {
           animation: blob 7s infinite;
-          transform-origin: center;
         }
 
         .animation-delay-2000 {
@@ -228,12 +227,6 @@ export default function ATSScoreChecker() {
 
         .animate-fade-in {
           animation: fadeIn 0.6s ease-out;
-        }
-
-        /* Optimize scrolling performance */
-        * {
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
         }
       `}</style>
     </div>
