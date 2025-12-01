@@ -119,10 +119,10 @@ export default function ATSScoreChecker() {
         {/* HEADER */}
         <div className="text-center mb-8 sm:mb-12">
           <div className="flex gap-16">
-            <div onClick={() => navigate(-1)} className=" cursor-pointer inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div onClick={() => navigate(-1)} className=" cursor-pointer inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg transition-shadow duration-300" style={{ contain: 'layout style' }}>
               <ArrowLeft className="text-slate-700 size-5 "/>
             </div>
-            <div className=" inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className=" inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-white/60 mb-4 shadow-lg transition-shadow duration-300" style={{ contain: 'layout style' }}>
               <Sparkles className="size-4 text-purple-600 animate-pulse" />
               <span className="text-xs sm:text-sm font-bold text-purple-700 tracking-wider">ATS SCORE CHECKER</span>
             </div>
@@ -134,7 +134,7 @@ export default function ATSScoreChecker() {
         </div>
 
         {/* MAIN CARD SECTION */}
-        <div className= "bg-black/5 backdrop-blur-xl rounded-3xl sm:rounded-2xl border border-white shadow-2xl p-6 sm:p-8 mb-8 space-y-6 transition-all duration-300 hover:shadow-3xl">
+        <div className= "bg-black/5 backdrop-blur-xl rounded-3xl sm:rounded-2xl border border-white shadow-2xl p-6 sm:p-8 mb-8 space-y-6" style={{ contain: 'layout style paint' }}>
 
           {/* UPLOAD + JOB DESCRIPTION */}
           {!score && (
@@ -179,7 +179,7 @@ export default function ATSScoreChecker() {
                   setAnalysis(null);
                   setJobDescription("");
                 }}
-                className="mt-6 sm:mt-10 rounded-full py-3 sm:py-4 px-6 sm:px-8 text-purple-700 bg-linear-to-r from-purple-100/60 to-pink-100/60 font-bold text-base sm:text-lg shadow-lg hover:shadow-xl hover:from-purple-100 hover:to-pink-100 transition-all backdrop-blur-sm border-2 border-white hover:border-white/70"
+                className="mt-6 sm:mt-10 rounded-full py-3 sm:py-4 px-6 sm:px-8 text-purple-700 bg-linear-to-r from-purple-100/60 to-pink-100/60 font-bold text-base sm:text-lg shadow-lg backdrop-blur-sm border-2 border-white transition-colors duration-300"
               >
                 Check Another Resume
               </button>

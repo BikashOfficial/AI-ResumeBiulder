@@ -17,7 +17,7 @@ export default function UploadJobDescription({
         </label>
         <textarea
           placeholder="Paste the job description here..."
-          className="transition-all w-full min-h-28 sm:min-h-32 p-4 sm:p-5 rounded-2xl border border-white focus:ring-2 focus:ring-purple-400 outline-none text-slate-700 resize-none shadow-inner bg-white/60 backdrop-blur-sm focus:bg-white/80 text-sm sm:text-base"
+          className="transition-colors duration-200 w-full min-h-28 sm:min-h-32 p-4 sm:p-5 rounded-2xl border border-white focus:ring-2 focus:ring-purple-400 outline-none text-slate-700 resize-none shadow-inner bg-white/60 backdrop-blur-sm focus:bg-white/80 text-sm sm:text-base"
           value={jobDescription}
           onChange={(e) => onJobDescriptionChange(e.target.value)}
           disabled={isAnalyzing}
@@ -27,11 +27,11 @@ export default function UploadJobDescription({
       {/* RESUME UPLOAD */}
       <label htmlFor="resume-upload" className="block ">
         <div
-          className={`rounded-2xl p-6 sm:p-10 transition-all duration-300 cursor-pointer flex flex-col items-center gap-3 sm:gap-4
-            border-2  shadow-lg hover:shadow-xl
+          className={`rounded-2xl p-6 sm:p-10 transition-colors duration-200 cursor-pointer flex flex-col items-center gap-3 sm:gap-4
+            border-2 shadow-lg
             ${file
               ? "border-green-400 border-dashed bg-green-50/40 backdrop-blur-sm"
-              : "border-white hover:border-blue-400 hover:bg-blue-50/20 backdrop-blur-sm"}`}>
+              : "border-white hover:border-blue-400 hover:bg-blue-50/20 backdrop-blur-sm"}`} style={{ contain: 'layout style paint' }}>
           {file ? (
             <>
               <FileText className="size-10 sm:size-12 text-green-600" />
@@ -71,7 +71,7 @@ export default function UploadJobDescription({
         <button
           onClick={onAnalyze}
           disabled={isAnalyzing}
-          className={`w-full mt-3 py-4 sm:py-5 rounded-2xl font-semibold bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:shadow-xl transition-all tracking-wide flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-sm sm:text-base backdrop-blur-sm border border-white/30 hover:border-white/50`}
+          className={`w-full mt-3 py-4 sm:py-5 rounded-2xl font-semibold bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 text-white transition-shadow duration-200 tracking-wide flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-sm sm:text-base backdrop-blur-sm border border-white/30`}
         >
           {isAnalyzing ? (
             <>
