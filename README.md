@@ -1,8 +1,6 @@
 
 # AI Resume Builder - Create Professional Resumes with AI
 
-![AI Resume Builder GIF](https://media.giphy.com/media/3oFzmbx4i1vZXy3v32/giphy.gif)
-
 This is a web application that helps users build beautiful resumes with the help of AI. It also provides an ATS score checker to help users optimize their resumes for Applicant Tracking Systems. This project is built with the MERN stack.
 
 ## Live Demo
