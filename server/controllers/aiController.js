@@ -173,7 +173,8 @@ export const uploadResume = async (req, res) => {
       response_format: { type: "json_object" },
     });
 
-    const extractedData = response.choices[0].message.content;
+    let extractedData = response.choices[0].message.content;
+    extractedData = extractedData.replace(/```json/g, "").replace(/```/g, "").trim();
     const parseData = JSON.parse(extractedData);
 
     const newResume = await Resume.create({
@@ -351,7 +352,8 @@ ${jsonTemplate}
     });
 
     // 5. Parse and return the JSON response
-    const extractedData = response.choices[0].message.content;
+    let extractedData = response.choices[0].message.content;
+    extractedData = extractedData.replace(/```json/g, "").replace(/```/g, "").trim();
     const atsResult = JSON.parse(extractedData);
 
     return res.status(200).json(atsResult);

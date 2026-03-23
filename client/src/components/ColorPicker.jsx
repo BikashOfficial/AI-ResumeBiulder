@@ -33,7 +33,7 @@ const ColorPicker = ({ selectedColor, onChange }) => {
                         {colors.map((color) => (
                             <div
                                 key={color.value}
-                                className='relative cursor-pointer group flex flex-col'
+                                className=' relative cursor-pointer group flex flex-col'
                                 onClick={() => { onChange(color.value); setIsOpen(false) }}
                             >
                                 <div

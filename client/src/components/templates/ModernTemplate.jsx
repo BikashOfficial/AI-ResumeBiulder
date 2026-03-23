@@ -1,176 +1,210 @@
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Globe, Calendar } from "lucide-react";
 
-const ModernTemplate = ({ data, accentColor }) => {
-	const formatDate = (dateStr) => {
-		if (!dateStr) return "";
-		const [year, month] = dateStr.split("-");
-		return new Date(year, month - 1).toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "short"
-		});
-	};
+const MinimalImageTemplate = ({ data, accentColor = "#0f766e" }) => {
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const [year, month] = dateStr.split("-");
+        return new Date(year, month - 1).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+        });
+    };
 
-	return (
-		<div className="max-w-4xl mx-auto bg-white text-gray-800">
-			{/* Header */}
-			<header className="p-8 text-white" style={{ backgroundColor: accentColor }}>
-				<h1 className="text-4xl font-light mb-3">
-					{data.personal_info?.full_name || "Your Name"}
-				</h1>
+    const hexToRgb = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+            ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+            : "15, 118, 110";
+    };
+    const rgb = hexToRgb(accentColor);
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm ">
-					{data.personal_info?.email && (
-						<div className="flex items-center gap-2">
-							<Mail className="size-4" />
-							<span>{data.personal_info.email}</span>
-						</div>
-					)}
-					{data.personal_info?.phone && (
-						<div className="flex items-center gap-2">
-							<Phone className="size-4" />
-							<span>{data.personal_info.phone}</span>
-						</div>
-					)}
-					{data.personal_info?.location && (
-						<div className="flex items-center gap-2">
-							<MapPin className="size-4" />
-							<span>{data.personal_info.location}</span>
-						</div>
-					)}
-					{data.personal_info?.linkedin && (
-						<a target="_blank" href={data.personal_info?.linkedin} className="flex items-center gap-2">
-							<Linkedin className="size-4" />
-							<span className="break-all text-xs">{data.personal_info.linkedin.split("https://www.")[1] ? data.personal_info.linkedin.split("https://www.")[1] : data.personal_info.linkedin}</span>
-						</a>
-					)}
-					{data.personal_info?.website && (
-						<a target="_blank" href={data.personal_info?.website} className="flex items-center gap-2">
-							<Globe className="size-4" />
-							<span className="break-all text-xs">{data.personal_info.website.split("https://")[1] ? data.personal_info.website.split("https://")[1] : data.personal_info.website}</span>
-						</a>
-					)}
-				</div>
-			</header>
+    const getImageSrc = () => {
+        if (!data?.personal_info?.image) return null;
+        if (typeof data.personal_info.image === "string") return data.personal_info.image;
+        if (typeof data.personal_info.image === "object") return URL.createObjectURL(data.personal_info.image);
+        return null;
+    };
+    const imgSrc = getImageSrc();
 
-			<div className="p-8">
-				{/* Professional Summary */}
-				{data.professional_summary && (
-					<section className="mb-8">
-						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-							Professional Summary
-						</h2>
-						<p className="text-gray-700 ">{data.professional_summary}</p>
-					</section>
-				)}
+    return (
+        <div
+            className="max-w-5xl mx-auto bg-white text-zinc-800"
+            style={{
+                fontFamily: "'DM Sans', 'Trebuchet MS', sans-serif",
+                fontSize: "14.8px",   // ⬆️ increased base
+                lineHeight: "1.55"
+            }}
+        >
+            {/* HEADER */}
+            <header
+                style={{
+                    background: `linear-gradient(120deg, rgba(${rgb},0.96) 0%, rgba(${rgb},0.80) 100%)`,
+                    padding: "26px 34px 22px",
+                    display: "grid",
+                    gridTemplateColumns: imgSrc ? "auto 1fr" : "1fr",
+                    gap: "22px",
+                    alignItems: "center",
+                }}
+            >
+                {imgSrc && (
+                    <img
+					className=""
+                        src={imgSrc}
+                        alt="Profile"
+                        style={{
+                            width: "90px",
+                            height: "90px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+							
+                            border: "3px solid rgba(255,255,255,0.5)",
+                        }}
+                    />
+                )}
 
-				{/* Experience */}
-				{data.experience && data.experience.length > 0 && (
-					<section className="mb-8">
-						<h2 className="text-2xl font-light mb-6 pb-2 border-b border-gray-200">
-							Experience
-						</h2>
+                <div>
+                    <h1 style={{
+                        color: "#fff",
+                        fontSize: "29px",   // ⬆️ increased
+                        fontWeight: "700",
+                        margin: 0
+                    }}>
+                        {data?.personal_info?.full_name || "Your Name"}
+                    </h1>
 
-						<div className="space-y-6">
-							{data.experience.map((exp, index) => (
-								<div key={index} className="relative pl-6 border-l border-gray-200">
+                    {data?.personal_info?.profession && (
+                        <p style={{
+                            color: "rgba(255,255,255,0.8)",
+                            fontSize: "13.5px",
+                            letterSpacing: "0.12em",
+                            marginTop: "5px"
+                        }}>
+                            {data.personal_info.profession}
+                        </p>
+                    )}
 
-									<div className="flex justify-between items-start mb-2">
-										<div>
-											<h3 className="text-xl font-medium text-gray-900">{exp.position}</h3>
-											<p className="font-medium" style={{ color: accentColor }}>{exp.company}</p>
-										</div>
-										<div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded">
-											{formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-										</div>
-									</div>
-									{exp.description && (
-										<div className="text-gray-700 leading-relaxed mt-3 whitespace-pre-line">
-											{exp.description}
-										</div>
-									)}
-								</div>
-							))}
-						</div>
-					</section>
-				)}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 16px", marginTop: "10px" }}>
+                        {data?.personal_info?.email && <HeaderContact icon={<Mail size={13} />} text={data.personal_info.email} />}
+                        {data?.personal_info?.phone && <HeaderContact icon={<Phone size={13} />} text={data.personal_info.phone} />}
+                        {data?.personal_info?.location && <HeaderContact icon={<MapPin size={13} />} text={data.personal_info.location} />}
+                        {data?.personal_info?.linkedin && <HeaderContact icon={<Linkedin size={13} />} text={data.personal_info.linkedin} />}
+                        {data?.personal_info?.website && <HeaderContact icon={<Globe size={13} />} text={data.personal_info.website} />}
+                    </div>
+                </div>
+            </header>
 
-				{/* Projects */}
-				{data.project && data.project.length > 0 && (
-					<section className="mb-8">
-						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-							Projects
-						</h2>
+            {/* BODY */}
+            <div style={{ display: "grid", gridTemplateColumns: "210px 1fr" }}>
 
-						<div className="space-y-6">
-							{data.project.map((p, index) => (
-								<div key={index} className="relative pl-6 border-l border-gray-200" style={{borderLeftColor: accentColor}}>
+                {/* SIDEBAR */}
+                <aside style={{
+                    background: `rgba(${rgb},0.04)`,
+                    borderRight: `1px solid rgba(${rgb},0.12)`,
+                    padding: "20px 16px",
+                }}>
+                    <SideSection title="Education" accentColor={accentColor}>
+                        {data.education?.map((edu, i) => (
+                            <div key={i} style={{ marginBottom: "10px" }}>
+                                <p style={{ fontSize: "14px", fontWeight: 600 }}>{edu.degree}</p>
+                                <p style={{ fontSize: "13px", color: "#666" }}>{edu.institution}</p>
+                                <p style={{ fontSize: "12.5px", color: accentColor }}>
+                                    {formatDate(edu.graduation_date)}
+                                </p>
+                            </div>
+                        ))}
+                    </SideSection>
 
+                    <SideSection title="Skills" accentColor={accentColor}>
+                        {data.skills?.map((skill, i) => (
+                            <p key={i} style={{ fontSize: "13px", marginBottom: "4px" }}>
+                                • {skill}
+                            </p>
+                        ))}
+                    </SideSection>
+                </aside>
 
-									<div className="flex justify-between items-start">
-										<div>
-											<h3 className="text-lg font-medium text-gray-900">{p.name}</h3>
-										</div>
-									</div>
-									{p.description && (
-										<div className="text-gray-700 leading-relaxed text-sm mt-3">
-											{p.description}
-										</div>
-									)}
-								</div>
-							))}
-						</div>
-					</section>
-				)}
+                {/* MAIN */}
+                <main style={{ padding: "20px 26px" }}>
 
-				<div className="grid sm:grid-cols-2 gap-8">
-					{/* Education */}
-					{data.education && data.education.length > 0 && (
-						<section>
-							<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-								Education
-							</h2>
+                    <MainSection title="Summary" accentColor={accentColor}>
+                        <p style={{ fontSize: "14.5px", color: "#444" }}>
+                            {data.professional_summary}
+                        </p>
+                    </MainSection>
 
-							<div className="space-y-4">
-								{data.education.map((edu, index) => (
-									<div key={index}>
-										<h3 className="font-semibold text-gray-900">
-											{edu.degree} {edu.field && `in ${edu.field}`}
-										</h3>
-										<p style={{ color: accentColor }}>{edu.institution}</p>
-										<div className="flex justify-between items-center text-sm text-gray-600">
-											<span>{formatDate(edu.graduation_date)}</span>
-											{edu.gpa && <span>GPA: {edu.gpa}</span>}
-										</div>
-									</div>
-								))}
-							</div>
-						</section>
-					)}
+                    <MainSection title="Experience" accentColor={accentColor}>
+                        {data.experience?.map((exp, i) => (
+                            <ExperienceItem key={i} exp={exp} accentColor={accentColor} formatDate={formatDate} />
+                        ))}
+                    </MainSection>
 
-					{/* Skills */}
-					{data.skills && data.skills.length > 0 && (
-						<section>
-							<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-								Skills
-							</h2>
+                    <MainSection title="Projects" accentColor={accentColor}>
+                        {data.project?.map((proj, i) => (
+                            <div key={i} style={{ marginBottom: "10px" }}>
+                                <h3 style={{ fontSize: "14.5px", fontWeight: 600 }}>
+                                    {proj.name}
+                                </h3>
+                                <p style={{ fontSize: "13.5px", color: "#555" }}>
+                                    {proj.description}
+                                </p>
+                            </div>
+                        ))}
+                    </MainSection>
+                </main>
+            </div>
+        </div>
+    );
+};
 
-							<div className="flex flex-wrap gap-2">
-								{data.skills.map((skill, index) => (
-									<span
-										key={index}
-										className="px-3 py-1 text-sm text-white rounded-full"
-										style={{ backgroundColor: accentColor }}
-									>
-										{skill}
-									</span>
-								))}
-							</div>
-						</section>
-					)}
-				</div>
-			</div>
-		</div>
-	);
-}
+/* COMPONENTS */
 
-export default ModernTemplate;
+const HeaderContact = ({ icon, text }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "white", fontSize: "13px" }}>
+        {icon}
+        <span>{text}</span>
+    </div>
+);
+
+const SideSection = ({ title, accentColor, children }) => (
+    <div style={{ marginBottom: "18px" }}>
+        <h2 style={{ fontSize: "13px", color: accentColor, marginBottom: "6px" }}>
+            {title}
+        </h2>
+        {children}
+    </div>
+);
+
+const MainSection = ({ title, accentColor, children }) => (
+    <div style={{ marginBottom: "18px" }}>
+        <h2 style={{ fontSize: "13px", color: accentColor, marginBottom: "8px" }}>
+            {title}
+        </h2>
+        {children}
+    </div>
+);
+
+const ExperienceItem = ({ exp, accentColor, formatDate }) => (
+    <div style={{ marginBottom: "12px" }}>
+        <h3 style={{ fontSize: "14.5px", fontWeight: 600 }}>
+            {exp.position}
+        </h3>
+        <p style={{ fontSize: "13.5px", color: accentColor }}>
+            {exp.company}
+        </p>
+        <p style={{ fontSize: "12.5px", color: "#777" }}>
+            {formatDate(exp.start_date)} – {exp.is_current ? "Present" : formatDate(exp.end_date)}
+        </p>
+
+        {exp.description && (
+            <ul style={{ marginTop: "4px", paddingLeft: "16px" }}>
+                {exp.description.split("\n").map((line, i) => (
+                    <li key={i} style={{ fontSize: "13.5px", color: "#555" }}>
+                        {line}
+                    </li>
+                ))}
+            </ul>
+        )}
+    </div>
+);
+
+export default MinimalImageTemplate;

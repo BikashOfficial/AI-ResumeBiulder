@@ -15,7 +15,7 @@ const Footer = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-14">
                     <div className="sm:col-span-2 lg:col-span-1">
                         <a href="https://prebuiltui.com">
-                            <img src="/logo.svg" className='h-11 w-auto' alt="" srcset="" />
+                            <img src="/logo.svg" className='h-11 w-auto' alt="" srcSet="" />
                         </a>
                         <p className="text-sm/7 mt-6">Your career deserves more than just a template. Let our AI craft a resume that highlights your strengths, showcases your achievements, and helps you stand out in every application.</p>
                     </div>
