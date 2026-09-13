@@ -11,18 +11,13 @@ import morgan from "morgan";
 dotenv.config();
 
 const port = process.env.PORT || 8000;
-const frontendOrigin = (
-  process.env.FRONTEND_URL
-).replace(/\/$/, "");
+// const frontendOrigin = process.env.FRONTEND_URL.replace(/\/$/, "");
 
 const app = express();
 app.set("trust proxy", 1);
 
 app.use(
-  cors({
-    origin: [frontendOrigin],
-    credentials: true,
-  }),
+  cors(),
 );
 app.use(cookieParser());
 app.use(morgan("dev"));
