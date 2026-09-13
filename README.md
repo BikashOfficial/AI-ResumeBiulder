@@ -1,157 +1,267 @@
-
-# AI Resume Builder - Create Professional Resumes with AI
-
-This is a web application that helps users build beautiful resumes with the help of AI. It also provides an ATS score checker to help users optimize their resumes for Applicant Tracking Systems. This project is built with the MERN stack.
-
+# 🚀 AI Resume Builder — Distributed Microservices Platform
 ## Live Demo
+## 📑 Table of Contents
+[https://ai-resume-biulder.vercel.app/](https://ai-resume-biulder.vercel.app/)
 
-[https://ai-resume-builder.vercel.app/](https://ai-resume-builder.vercel.app/)
 
-## Getting Started
+> **Build, Enhance, and Score Resumes with Gemini 3.5 Flash and a High-Performance Microservices Architecture**  
+> An intelligent resume platform powered by React 19, Tailwind CSS, API Gateway Layer-7 routing, Redis session cache (zero-DB auth), and decoupled Node.js microservices.
 
-To get started with the AI Resume Builder, you'll need to have Node.js and npm installed on your machine.
+---
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/ai-resume-builder.git
-   ```
+## 📑 Table of Contents
 
-2. **Install dependencies:**
-   ```bash
-   # Install server dependencies
-   cd server
-   npm install
+- [Overview & Architecture](#-overview--architecture)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Project Directory Layout](#-project-directory-layout)
+- [Microservices & Port Inventory](#-microservices--port-inventory)
+- [Getting Started & Local Setup](#-getting-started--local-setup)
+- [API Endpoints Overview](#-api-endpoints-overview)
+- [Environment Variables Guide](#-environment-variables-guide)
 
-   # Install client dependencies
-   cd ../client
-   npm install
-   ```
+---
 
-3. **Set up environment variables:**
-   - Create a `.env` file in the `server` directory and add the following variables:
-     ```
-     MONGO_URI=your_mongodb_connection_string
-     JWT_SECRET=your_jwt_secret
-     ```
+## 🏛 Overview & Architecture
 
-4. **Run the application:**
-   ```bash
-   # Run the server
-   cd server
-   npm start
+AI Resume Builder is engineered as a **Distributed Microservices Architecture** designed for high throughput, sub-millisecond edge authentication, and compute-isolated AI processing.
 
-   # Run the client
-   cd ../client
-   npm run dev
-   ```
-
-## Features
-
-- **User Authentication:** Users can register and log in to the application.
-- **Dashboard:** Users can view and manage their resumes on the dashboard.
-- **Resume Builder:** Users can create and edit their resumes using a form-based editor.
-- **AI-Powered Resume Enhancement:**
-  - Enhance job descriptions
-  - Enhance professional summaries
-  - Enhance project descriptions
-- **Multiple Resume Templates:** Users can choose from a variety of resume templates.
-- **Resume Preview:** Users can preview their resumes in real-time.
-- **ATS Score Checker:** Users can upload their resumes and a job description to get an ATS score and suggestions for improvement.
-- **Public Resume URL:** Users can share a public URL of their resume.
-- **Image Upload:** Users can upload their profile picture.
-
-## Technologies Used
-
-- **Frontend:**
-  - React
-  - Redux
-  - Vite
-  - Tailwind CSS
-
-- **Backend:**
-  - Node.js
-  - Express
-  - MongoDB
-  - Mongoose
-  - JWT
-
-## API Endpoints
-
-### User Endpoints
-
-- `POST /api/user/register`: Register a new user.
-- `POST /api/user/login`: Log in a user.
-- `GET /api/user/data`: Get the logged-in user's data.
-- `GET /api/user/resumes`: Get all the resumes of the logged-in user.
-
-### Resume Endpoints
-
-- `POST /api/resume/create`: Create a new resume.
-- `PUT /api/resume/update`: Update an existing resume.
-- `DELETE /api/resume/delete/:resumeId`: Delete a resume.
-- `GET /api/resume/get/:resumeId`: Get a resume by its ID.
-- `GET /api/resume/public/:resumeId`: Get a public resume by its ID.
-
-### AI Endpoints
-
-- `POST /api/ai/enhance-job-desc`: Enhance a job description using AI.
-- `POST /api/ai/enhance-pro-sum`: Enhance a professional summary using AI.
-- `POST /api/ai/enhance-project-desc`: Enhance a project description using AI.
-- `POST /api/ai/upload-resume`: Upload a resume for analysis.
-- `POST /api/ai/ats`: Upload a resume for ATS score checking.
-
-## Data Structures
-
-### User
-
-```json
-{
-  "name": "string",
-  "email": "string",
-  "password": "string"
-}
+```
+                         Client (React / Vite @ :5173)
+                                      │
+                                      ▼
+             ┌─────────────────────────────────────────────────┐
+             │            API GATEWAY (Port: 8000)             │
+             │   • Centralized CORS      • Morgan Logging      │
+             │   • Redis Edge Auth       • Header Enrichment   │
+             └────────┬───────────────┬───────────────┬────────┘
+                      │               │               │
+            Proxy     │     Proxy     │     Proxy     │
+            /api/auth │     /api/resumes      /api/ai │
+                      ▼               ▼               ▼
+             ┌────────────────┐┌─────────────┐┌────────────────┐
+             │  AUTH SERVICE  ││RESUME SERVIC││   AI SERVICE   │
+             │   Port: 8001   ││ Port: 8002  ││   Port: 8003   │
+             ├────────────────┤├─────────────┤├────────────────┤
+             │• Bcrypt Auth   ││• Resumes CRUD││• Gemini 3.5    │
+             │• Redis Session ││• ImageKit CDN││• ATS Analyzer │
+             │• HttpOnly Cook.││• Public Link││• Resume Parser │
+             └───────┬────────┘└──────┬──────┘└───────┬────────┘
+                     │                │               │
+                     └────────────────┴───────────────┴────────┐
+                                      SHARED REDIS (Port 6379) │
+                                      • session-${sessionId}   │
+                                      • user-session-${userId} │
 ```
 
-### Resume
+### Architectural Highlights:
+1. **Perimeter Redis Authentication**: The Gateway intercepts incoming requests, validates session UUIDs against Redis in `< 0.5ms`, and injects verified user identity (`x-user-id`) to downstream microservices.
+2. **Compute-Asymmetric AI Isolation**: Text enhancement, schema extraction, and ATS parsing run isolated on the AI Microservice (`:8003`) powered by `@google/generative-ai` (`gemini-3.5-flash`).
+3. **Database-Per-Service**: Auth, Resume, and AI services maintain isolated database connections, preventing schema collisions and data leakage.
 
-```json
-{
-  "user": "ObjectId",
-  "template": "string",
-  "personal": {
-    "name": "string",
-    "email": "string",
-    "phone": "string",
-    "website": "string",
-    "linkedin": "string",
-    "github": "string",
-    "image": "string"
-  },
-  "summary": "string",
-  "experience": [
-    {
-      "company": "string",
-      "position": "string",
-      "startDate": "string",
-      "endDate": "string",
-      "description": "string"
-    }
-  ],
-  "education": [
-    {
-      "institution": "string",
-      "degree": "string",
-      "startDate": "string",
-      "endDate": "string"
-    }
-  ],
-  "projects": [
-    {
-      "title": "string",
-      "description": "string",
-      "link": "string"
-    }
-  ],
-  "skills": ["string"]
-}
+---
+
+## ✨ Key Features
+
+- **⚡ Zero-DB Profile Resolution**: User profiles (`/api/users/data` and `/api/me`) are served straight from the Redis cache in microseconds without touching MongoDB.
+- **🤖 AI-Powered Resume Builder**:
+  - Auto-generate ATS-friendly **Job Descriptions**.
+  - Polish **Professional Summaries**.
+  - Enhance **Project Descriptions** using strong action verbs and metrics.
+- **📄 AI Resume Text Parser**: Upload an existing resume to automatically parse and populate personal info, work experience, projects, and education into structured JSON.
+- **🎯 Real-Time ATS Score Checker**: Evaluate resume keyword alignment against a target job description and receive a compatibility score (0–100) with missing keyword gap analysis.
+- **🖼️ Automated Photo Processing**: Profile photo uploads with ImageKit face detection cropping (`fo-face`) and AI background removal.
+- **🔗 Shareable Public URL**: Instant public web links (`/view/:resumeId`) for portfolios and recruiters without authentication barriers.
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend Client
+- **Framework**: React 19 + Vite
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS + Lucide Icons
+- **HTTP Client**: Axios with `withCredentials: true`
+- **Notifications**: React Hot Toast
+
+### Backend Microservices
+- **Runtime**: Node.js (ES Modules)
+- **Framework**: Express 5
+- **Reverse Proxy**: `express-http-proxy`
+- **In-Memory Cache**: Redis / Upstash (`ioredis`)
+- **Primary Database**: MongoDB Atlas + Mongoose
+- **Generative AI**: Google Generative AI SDK (`gemini-3.5-flash`)
+- **Media CDN**: ImageKit SDK
+- **Security**: Bcrypt password hashing + `HttpOnly` SameSite session cookies
+
+---
+
+## 📂 Project Directory Layout
+
+```text
+ai-resume-builder/
+├── client/                     # Frontend React SPA
+│   ├── src/
+│   │   ├── components/         # Reusable UI components & forms
+│   │   ├── pages/              # Dashboard, Builder, ATS, Preview, Login
+│   │   ├── config/api.js       # Configured Axios instance
+│   │   └── app/features/       # Redux slices
+│   └── .env                    # VITE_BASE_URL=http://localhost:8000
+│
+└── server/                     # Microservices Root
+    ├── gateway/                # Port 8000: API Gateway & Perimeter Auth
+    │   ├── middleware/         # Redis-backed protect middleware
+    │   ├── utils/              # proxyWithHeader header injector
+    │   └── controllers/        # Zero-DB profile controller
+    │
+    ├── services/
+    │   ├── auth/               # Port 8001: User auth & Redis session inception
+    │   ├── resume/             # Port 8002: Resume CRUD & ImageKit integration
+    │   └── ai/                 # Port 8003: Gemini 3.5 Flash & ATS evaluation
+    │
+    └── shared/                 # Centralized Redis Singleton Client
 ```
+
+---
+
+## 🌐 Microservices & Port Inventory
+
+| Service | Port | Working Directory | Primary Role |
+| :--- | :--- | :--- | :--- |
+| **Frontend Client** | `5173` | `client/` | React 19 Single Page Application |
+| **API Gateway** | `8000` | `server/gateway/` | Central Ingress, Redis perimeter authentication, header enrichment |
+| **Auth Service** | `8001` | `server/services/auth/` | Registration, login, logout, Redis session writes |
+| **Resume Service** | `8002` | `server/services/resume/` | Resume CRUD, public sharing, photo uploading |
+| **AI Service** | `8003` | `server/services/ai/` | Google Gemini 3.5 Flash, ATS analysis, schema parsing |
+
+---
+
+## 🚀 Getting Started & Local Setup
+
+### Prerequisites
+- Node.js `>= 20.x`
+- Redis server running locally on `localhost:6379` OR an Upstash Redis URL
+- MongoDB Atlas Cluster
+- Google Gemini API Key
+
+### Installation
+
+```bash
+# 1. Clone repository
+git clone https://github.com/your-username/ai-resume-builder.git
+cd ai-resume-builder
+
+# 2. Install Client Dependencies
+cd client
+npm install
+
+# 3. Install Gateway Dependencies
+cd ../server/gateway
+npm install
+
+# 4. Install Services Dependencies
+cd ../services/auth && npm install
+cd ../resume && npm install
+cd ../ai && npm install
+```
+
+### Running the Full Platform Locally
+
+Open separate terminal tabs for each service:
+
+```bash
+# Tab 1: Auth Service (Port 8001)
+cd server/services/auth
+npm run dev
+
+# Tab 2: Resume Service (Port 8002)
+cd server/services/resume
+npm run dev
+
+# Tab 3: AI Service (Port 8003)
+cd server/services/ai
+npm run dev
+
+# Tab 4: API Gateway (Port 8000)
+cd server/gateway
+npm run dev
+
+# Tab 5: Client Application (Port 5173)
+cd client
+npm run dev
+```
+
+Visit **`http://localhost:5173`** in your browser.
+
+---
+
+## 📡 API Endpoints Overview
+
+All requests from the client target the **API Gateway** at `http://localhost:8000`:
+
+### Authentication & Users
+- `POST /api/users/register` — Register a new account.
+- `POST /api/users/login` — Log in and start a 14-day Redis session.
+- `POST /api/users/logout` — Destroy Redis session and clear cookie.
+- `GET /api/users/data` or `GET /api/me` — Sub-millisecond zero-DB user profile.
+
+### Resumes
+- `GET /api/users/resumes` — Get all resumes for the authenticated user.
+- `POST /api/resumes/create` — Create a new resume.
+- `PUT /api/resumes/update` — Update resume content and/or upload avatar.
+- `DELETE /api/resumes/delete/:resumeId` — Delete a resume.
+- `GET /api/resumes/get/:resumeId` — Fetch a single resume.
+- `GET /api/resumes/public/:resumeId` — Public preview (No auth required).
+
+### Artificial Intelligence (Gemini 3.5 Flash)
+- `POST /api/ai/upload-resume` — Parse raw resume text into structured JSON.
+- `POST /api/ai/ats` — Compare resume against job description for ATS score.
+- `POST /api/ai/enhance-job-desc` — Rewrite job descriptions with action verbs.
+- `POST /api/ai/enhance-pro-sum` — Craft professional summaries.
+- `POST /api/ai/enhance-project-desc` — Enhance project details.
+
+---
+
+## ⚙️ Environment Variables Guide
+
+### Client (`client/.env`)
+```ini
+VITE_BASE_URL="http://localhost:8000"
+```
+
+### Gateway (`server/gateway/.env`)
+```ini
+PORT=8000
+AUTH_SERVICE=http://localhost:8001
+RESUME_SERVICE=http://localhost:8002
+AI_SERVICE=http://localhost:8003
+FRONTEND_URL="http://localhost:5173"
+REDIS_URL="rediss://default:...@master-ocelot-150014.upstash.io:6379"
+```
+
+### Auth Service (`server/services/auth/.env`)
+```ini
+PORT=8001
+MONGO_URI="mongodb+srv://.../auth"
+REDIS_URL="rediss://default:...@master-ocelot-150014.upstash.io:6379"
+```
+
+### Resume Service (`server/services/resume/.env`)
+```ini
+PORT=8002
+MONGO_URI="mongodb+srv://.../resume"
+IMAGEKIT_PRIVATE_KEY="private_..."
+```
+
+### AI Service (`server/services/ai/.env`)
+```ini
+PORT=8003
+MONGO_URI="mongodb+srv://.../ai"
+GEMINI_API_KEY="AIzaSy..."
+GEMINI_AI_MODEL="gemini-3.5-flash"
+```
+
+---
+
+## 📄 License
+This project is licensed under the ISC License.

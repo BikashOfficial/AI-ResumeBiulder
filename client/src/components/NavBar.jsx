@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { logout } from '../app/features/authSlice'
+import api from '../config/api'
 
 const NavBar = () => {
 
@@ -63,10 +64,15 @@ const NavBar = () => {
               </button>
 
               <button
-                onClick={() => {
-                  navigate('/');
+                onClick={async () => {
+                  try {
+                    await api.post('/api/users/logout');
+                  } catch (e) {
+                    console.error("Logout error", e);
+                  }
                   dispatch(logout());
                   setShowLogout(false);
+                  navigate('/');
                 }}
                 className="
             flex-1 py-2.5 rounded-xl text-white font-medium
