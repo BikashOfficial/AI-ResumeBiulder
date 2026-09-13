@@ -11,36 +11,59 @@ import morgan from "morgan";
 dotenv.config();
 
 const port = process.env.PORT || 8000;
-// const frontendOrigin = process.env.FRONTEND_URL.replace(/\/$/, "");
+const authService = process.env.AUTH_SERVICE || "http://localhost:8001";
+const resumeService = process.env.RESUME_SERVICE || "http://localhost:8002";
+const aiService = process.env.AI_SERVICE || "http://localhost:8003";
 
 const app = express();
 app.set("trust proxy", 1);
 
+// -------------------------------------------------------------
+// CORS Configuration with Credentials & Dynamic Origin Reflection
+// -------------------------------------------------------------
 app.use(
-  cors(),
+  cors({
+    origin: (origin, callback) => {
+      // Reflect the requesting origin so it is never wildcard '*'
+      callback(null, origin || true);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cookie",
+      "x-user-id",
+      "X-Requested-With",
+      "Accept",
+    ],
+    exposedHeaders: ["Set-Cookie"],
+    optionsSuccessStatus: 200,
+  }),
 );
+
 app.use(cookieParser());
 app.use(morgan("dev"));
 
 // -------------------------------------------------------------
 // Public Routes (Auth Service)
 // -------------------------------------------------------------
-app.use("/api/auth", proxy(process.env.AUTH_SERVICE));
+app.use("/api/auth", proxy(authService));
 app.use(
   "/api/users/register",
-  proxy(process.env.AUTH_SERVICE, {
+  proxy(authService, {
     proxyReqPathResolver: () => "/register",
   }),
 );
 app.use(
   "/api/users/login",
-  proxy(process.env.AUTH_SERVICE, {
+  proxy(authService, {
     proxyReqPathResolver: () => "/login",
   }),
 );
 app.use(
   "/api/users/logout",
-  proxy(process.env.AUTH_SERVICE, {
+  proxy(authService, {
     proxyReqPathResolver: () => "/logout",
   }),
 );
@@ -56,13 +79,13 @@ app.use("/api/users/data", protect, getCurrentUser);
 // -------------------------------------------------------------
 app.use(
   "/api/resumes/public",
-  proxy(process.env.RESUME_SERVICE, {
+  proxy(resumeService, {
     proxyReqPathResolver: (req) => `/public${req.url}`,
   }),
 );
 app.use(
   "/api/resume/public",
-  proxy(process.env.RESUME_SERVICE, {
+  proxy(resumeService, {
     proxyReqPathResolver: (req) => `/public${req.url}`,
   }),
 );
@@ -74,17 +97,17 @@ app.use(
 app.use(
   "/api/users/resumes",
   protect,
-  proxyWithHeader(process.env.RESUME_SERVICE, {
+  proxyWithHeader(resumeService, {
     proxyReqPathResolver: () => "/resumes",
   }),
 );
-app.use("/api/resume", protect, proxyWithHeader(process.env.RESUME_SERVICE));
-app.use("/api/resumes", protect, proxyWithHeader(process.env.RESUME_SERVICE));
+app.use("/api/resume", protect, proxyWithHeader(resumeService));
+app.use("/api/resumes", protect, proxyWithHeader(resumeService));
 
 // -------------------------------------------------------------
 // Protected AI Routes
 // -------------------------------------------------------------
-app.use("/api/ai", protect, proxyWithHeader(process.env.AI_SERVICE));
+app.use("/api/ai", protect, proxyWithHeader(aiService));
 
 // -------------------------------------------------------------
 // Root Health Check
