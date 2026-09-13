@@ -18,21 +18,34 @@ if (!process.env.REDIS_URL) {
 
 const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 
+const isTls = redisUrl.startsWith("rediss://");
+
 const redis = new Redis(redisUrl, {
-  maxRetriesPerRequest: 3,
+  maxRetriesPerRequest: null,
   enableReadyCheck: false,
-  connectTimeout: 10000,
+  connectTimeout: 15000,
+  keepAlive: 10000,
+  ...(isTls && {
+    tls: {
+      rejectUnauthorized: false,
+    },
+  }),
   retryStrategy(times) {
-    if (times > 5) {
+    if (times > 10) {
       console.warn("⚠️ Redis max connection retries reached");
       return null;
     }
-    return Math.min(times * 200, 2000);
+    // Reconnect with exponential backoff capped at 3 seconds
+    return Math.min(times * 150, 3000);
   },
 });
 
 redis.on("connect", () => {
   console.log("✅ Redis connected successfully");
+});
+
+redis.on("ready", () => {
+  console.log("🚀 Redis client ready to accept commands");
 });
 
 redis.on("reconnecting", (delay) => {
