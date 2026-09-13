@@ -11,9 +11,9 @@ import morgan from "morgan";
 dotenv.config();
 
 const port = process.env.PORT || 8000;
-const authService = process.env.AUTH_SERVICE || "http://localhost:8001";
-const resumeService = process.env.RESUME_SERVICE || "http://localhost:8002";
-const aiService = process.env.AI_SERVICE || "http://localhost:8003";
+const authService = (process.env.AUTH_SERVICE || "http://localhost:8001").replace(/\/$/, "");
+const resumeService = (process.env.RESUME_SERVICE || "http://localhost:8002").replace(/\/$/, "");
+const aiService = (process.env.AI_SERVICE || "http://localhost:8003").replace(/\/$/, "");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -46,24 +46,43 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // -------------------------------------------------------------
+// Proxy Helper with 60s Timeout (supports Render Cold Starts)
+// -------------------------------------------------------------
+const createProxy = (targetUrl, options = {}) => {
+  return proxy(targetUrl, {
+    timeout: 60000,
+    ...options,
+    proxyErrorHandler: (err, res, next) => {
+      console.error(`❌ [Gateway Proxy Error] Target: ${targetUrl} - ${err.code || err.message}`);
+      return res.status(502).json({
+        message: `Bad Gateway: Could not reach downstream service at ${targetUrl}. It may be spinning up or sleeping on Render.`,
+        target: targetUrl,
+        code: err.code || "SERVICE_UNAVAILABLE",
+        error: err.message,
+      });
+    },
+  });
+};
+
+// -------------------------------------------------------------
 // Public Routes (Auth Service)
 // -------------------------------------------------------------
-app.use("/api/auth", proxy(authService));
+app.use("/api/auth", createProxy(authService));
 app.use(
   "/api/users/register",
-  proxy(authService, {
+  createProxy(authService, {
     proxyReqPathResolver: () => "/register",
   }),
 );
 app.use(
   "/api/users/login",
-  proxy(authService, {
+  createProxy(authService, {
     proxyReqPathResolver: () => "/login",
   }),
 );
 app.use(
   "/api/users/logout",
-  proxy(authService, {
+  createProxy(authService, {
     proxyReqPathResolver: () => "/logout",
   }),
 );
@@ -79,13 +98,13 @@ app.use("/api/users/data", protect, getCurrentUser);
 // -------------------------------------------------------------
 app.use(
   "/api/resumes/public",
-  proxy(resumeService, {
+  createProxy(resumeService, {
     proxyReqPathResolver: (req) => `/public${req.url}`,
   }),
 );
 app.use(
   "/api/resume/public",
-  proxy(resumeService, {
+  createProxy(resumeService, {
     proxyReqPathResolver: (req) => `/public${req.url}`,
   }),
 );
@@ -113,9 +132,19 @@ app.use("/api/ai", protect, proxyWithHeader(aiService));
 // Root Health Check
 // -------------------------------------------------------------
 app.get("/", (req, res) => {
-  res.json({ message: "hellow from gateway" });
+  res.json({
+    message: "hellow from gateway",
+    services: {
+      auth: authService,
+      resume: resumeService,
+      ai: aiService,
+    },
+  });
 });
 
 app.listen(port, () => {
   console.log(`Running gateway on server ${port}`);
+  console.log(`🔗 Target Auth Service:   ${authService}`);
+  console.log(`🔗 Target Resume Service: ${resumeService}`);
+  console.log(`🔗 Target AI Service:     ${aiService}`);
 });
