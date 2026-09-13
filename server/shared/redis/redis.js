@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+import { createRequire } from "module";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -16,8 +16,36 @@ if (!process.env.REDIS_URL) {
   dotenv.config({ path: path.resolve(__dirname, "../../services/auth/.env") });
 }
 
-const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+// Multi-path resolver for ioredis so it resolves correctly in Render when Root Directory is set to a subfolder
+let Redis;
+const candidatePaths = [
+  path.resolve(process.cwd(), "package.json"),
+  path.resolve(__dirname, "../../../gateway/package.json"),
+  path.resolve(__dirname, "../../gateway/package.json"),
+  path.resolve(__dirname, "../../../services/auth/package.json"),
+  path.resolve(__dirname, "../../services/auth/package.json"),
+  path.resolve(__dirname, "../../../package.json"),
+  path.resolve(__dirname, "../../package.json"),
+];
 
+for (const pkgPath of candidatePaths) {
+  try {
+    const req = createRequire(pkgPath);
+    Redis = req("ioredis");
+    if (Redis) break;
+  } catch {}
+}
+
+if (!Redis) {
+  try {
+    const req = createRequire(import.meta.url);
+    Redis = req("ioredis");
+  } catch (err) {
+    console.error("❌ Failed to resolve ioredis from candidate paths:", err.message);
+  }
+}
+
+const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 const isTls = redisUrl.startsWith("rediss://");
 
 const redis = new Redis(redisUrl, {
@@ -35,7 +63,6 @@ const redis = new Redis(redisUrl, {
       console.warn("⚠️ Redis max connection retries reached");
       return null;
     }
-    // Reconnect with exponential backoff capped at 3 seconds
     return Math.min(times * 150, 3000);
   },
 });
