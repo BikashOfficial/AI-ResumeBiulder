@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-import redis from "../../../shared/redis/redis.js";
+import redis from "../config/redis.js";
 
 const createSession = async (user, res) => {
   const sessionId = crypto.randomUUID();
