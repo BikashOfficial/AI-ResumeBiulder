@@ -23,13 +23,11 @@ const Login = () => {
     e.preventDefault()
     try {
       const { data } = await api.post(`/api/users/${state}`, formData)
-      dispatch(login(data))
-      localStorage.setItem('token', data.token)
+      dispatch(login({ user: data.user }))
       toast.success(data.message)
     } catch (error) {
-      toast.success(error?.response?.data?.message || error.message)
+      toast.error(error?.response?.data?.message || error.message)
     }
-
   }
 
   const handleChange = (e) => {

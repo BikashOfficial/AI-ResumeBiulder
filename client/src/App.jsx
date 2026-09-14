@@ -5,32 +5,29 @@ import Layout from './pages/Layout'
 import Dashboard from './pages/Dashboard'
 import ResumeBuilder from './pages/ResumeBuilder'
 import Preview from './pages/Preview'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import api from './config/api.js'
 import { login, setLoading } from './app/features/authSlice.js'
 import { Toaster } from 'react-hot-toast'
 import ATSScoreChecker from './pages/ATSScoreChecker.jsx'
+import Login from './pages/Login.jsx'
+import LoginLoading from './components/LoginLoading.jsx'
 
 const App = () => {
 
   const dispatch = useDispatch()
+  const { user, loading } = useSelector(state => state.auth)
 
   const getUserData = async () => {
-    const token = localStorage.getItem('token')
     try {
-      if (token) {
-        const { data } = await api.get('/api/me', { headers: { Authorization: token } })
-
-        if (data.user) {
-          dispatch(login({ token, user: data.user }))
-        }
-        dispatch(setLoading(false))
-      } else {
-        dispatch(setLoading(false))
+      const { data } = await api.get('/api/me')
+      if (data?.user) {
+        dispatch(login({ user: data.user }))
       }
     } catch (error) {
-      dispatch(setLoading(false))
       console.log(error.message)
+    } finally {
+      dispatch(setLoading(false))
     }
   }
 
@@ -45,7 +42,7 @@ const App = () => {
         
         <Route path='/' element={<Home />} />
         
-        <Route path='app' element={<Layout />}>
+        <Route path='app' element={loading ? <LoginLoading /> : (user ? <Layout /> : <Login />)}>
           <Route index element={<Dashboard />} />
           <Route path='builder/:resumeId' element={<ResumeBuilder />} />
           <Route path='ats' element={<ATSScoreChecker/>} />

@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import api from '../config/api'
 import toast from 'react-hot-toast'
 import pdfToText from 'react-pdftotext'
 import ResumeOptions from '../components/dashboard/ResumeOptions'
 import ResumeGrid from '../components/dashboard/ResumeGrid'
 import ResumeModals from '../components/dashboard/ResumeModals'
+import {
+  setAllResumes,
+  addResume,
+  updateResumeInList,
+  removeResumeFromList,
+} from '../app/features/resumeSlice'
 
 const Dashboard = () => {
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const { user, token } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.auth)
+  const { allResumes } = useSelector(state => state.resume)
 
   const colors = [
     '#9333ea', '#d97706', '#dc2626', '#0284c7', '#f59e0b', '#3b82f6', '#2563eb', '#4ade80', '#10b981', '#e11d48'
   ]
 
-  const [allResumes, setAllResumes] = useState([])
   const [showCreateResume, setShowCreateResume] = useState(false)
   const [showUploadResume, setShowUploadResume] = useState(false)
   const [title, setTitle] = useState('')
@@ -29,8 +36,8 @@ const Dashboard = () => {
 
   const loadAllResumes = async () => {
     try {
-      const { data } = await api.get('/api/users/resumes', { headers: { Authorization: token } })
-      setAllResumes(data.resume)
+      const { data } = await api.get('/api/users/resumes')
+      dispatch(setAllResumes(Array.isArray(data?.resume) ? data.resume : []))
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message)
     }
@@ -39,8 +46,8 @@ const Dashboard = () => {
   const createResume = async (e) => {
     try {
       e.preventDefault()
-      const { data } = await api.post('/api/resumes/create', { title }, { headers: { Authorization: token } })
-      setAllResumes([...allResumes, data.resume])
+      const { data } = await api.post('/api/resumes/create', { title })
+      dispatch(addResume(data.resume))
       setShowCreateResume(false)
       setTitle('')
       navigate(`/app/builder/${data.resume._id}`)
@@ -55,7 +62,7 @@ const Dashboard = () => {
     try {
       const resumeText = await pdfToText(resume)
 
-      const { data } = await api.post('/api/ai/upload-resume', { resumeText, title }, { headers: { Authorization: token } })
+      const { data } = await api.post('/api/ai/upload-resume', { resumeText, title })
       setTitle('')
       setResume(null)
       setShowUploadResume(false)
@@ -69,8 +76,8 @@ const Dashboard = () => {
   const editTitle = async (e) => {
     try {
       e.preventDefault()
-      const { data } = await api.put('/api/resumes/update', { resumeId: editResumeId, resumeData: { title } }, { headers: { Authorization: token } })
-      setAllResumes(allResumes.map(resume => resume._id === editResumeId ? { ...resume, title } : resume))
+      const { data } = await api.put('/api/resumes/update', { resumeId: editResumeId, resumeData: { title } })
+      dispatch(updateResumeInList({ id: editResumeId, title }))
       setTitle('')
       setEditResumeId('')
       toast.success(data.message)
@@ -81,10 +88,8 @@ const Dashboard = () => {
 
   const deleteResumeHandler = async (deleteId) => {
     try {
-      const { data } = await api.delete(`/api/resumes/delete/${deleteId}`, {
-        headers: { Authorization: token }
-      })
-      setAllResumes(allResumes.filter(r => r._id !== deleteId))
+      const { data } = await api.delete(`/api/resumes/delete/${deleteId}`)
+      dispatch(removeResumeFromList(deleteId))
       toast.success(data.message)
       setDeleteId("")
     } catch (error) {
@@ -93,8 +98,10 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    loadAllResumes()
-  }, [])
+    if (user) {
+      loadAllResumes()
+    }
+  }, [user])
 
   return (
     <div>

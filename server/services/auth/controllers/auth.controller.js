@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import redis from "../config/redis.js";
 
-const createSession = async (user, res) => {
+const createSession = async (user, res, req) => {
   const sessionId = crypto.randomUUID();
   const userId = user._id.toString();
 
@@ -20,6 +20,7 @@ const createSession = async (user, res) => {
     `session-${sessionId}`,
     JSON.stringify({
       userId: userId,
+      _id: userId,
       name: user.name,
       email: user.email,
     }),
@@ -28,11 +29,17 @@ const createSession = async (user, res) => {
   );
 
   // 3. Set HttpOnly session cookie
+  const isProduction =
+    process.env.NODE_ENV === "production" ||
+    req?.secure ||
+    req?.headers?.["x-forwarded-proto"] === "https";
+
   res.cookie("session", sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 14 * 24 * 60 * 60 * 1000,
+    path: "/",
   });
 
   const userObj = user.toObject ? user.toObject() : { ...user };
@@ -65,11 +72,10 @@ export const registerUser = async (req, res) => {
       password: hashed_pw,
     });
 
-    const { sessionId, user } = await createSession(newUser, res);
+    const { user } = await createSession(newUser, res, req);
 
     return res.status(201).json({
       message: "User created successfully",
-      token: sessionId,
       user: user,
     });
   } catch (error) {
@@ -98,11 +104,10 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
 
-    const { sessionId, user: userdata } = await createSession(user, res);
+    const { user: userdata } = await createSession(user, res, req);
 
     return res.status(200).json({
       message: "Login successful",
-      token: sessionId,
       user: userdata,
     });
   } catch (error) {
@@ -148,10 +153,16 @@ export const logout = async (req, res) => {
       await redis.del(`session-${sessionId}`);
     }
 
+    const isProduction =
+      process.env.NODE_ENV === "production" ||
+      req?.secure ||
+      req?.headers?.["x-forwarded-proto"] === "https";
+
     res.clearCookie("session", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
     });
 
     return res.status(200).json({ message: "logout sucessfully!" });

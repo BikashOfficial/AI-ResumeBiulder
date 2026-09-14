@@ -13,6 +13,7 @@ import protect from "../middleware/auth.middleware.js";
 const resumeRouter = express.Router();
 
 // User resumes list
+resumeRouter.get("/", protect, getUserResumes);
 resumeRouter.get("/resumes", protect, getUserResumes);
 resumeRouter.get("/get-resumes", protect, getUserResumes);
 

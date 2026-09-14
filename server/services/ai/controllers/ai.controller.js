@@ -215,7 +215,9 @@ Rules:
     const response = await model.generateContent(userPrompt);
     let extractedData = response.response.text();
     extractedData = extractedData.replace(/```json/gi, "").replace(/```/g, "").trim();
-    const atsResult = JSON.parse(extractedData);
+    const jsonMatch = extractedData.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : extractedData;
+    const atsResult = JSON.parse(jsonStr);
 
     return res.status(200).json(atsResult);
   } catch (error) {

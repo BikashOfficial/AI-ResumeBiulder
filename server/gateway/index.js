@@ -50,7 +50,7 @@ app.use(morgan("dev"));
 // -------------------------------------------------------------
 const createProxy = (targetUrl, options = {}) => {
   return proxy(targetUrl, {
-    timeout: 60000,
+    timeout: 90000,
     ...options,
     proxyErrorHandler: (err, res, next) => {
       console.error(`❌ [Gateway Proxy Error] Target: ${targetUrl} - ${err.code || err.message}`);
@@ -126,7 +126,13 @@ app.use("/api/resumes", protect, proxyWithHeader(resumeService));
 // -------------------------------------------------------------
 // Protected AI Routes
 // -------------------------------------------------------------
-app.use("/api/ai", protect, proxyWithHeader(aiService));
+app.use(
+  "/api/ai",
+  protect,
+  proxyWithHeader(aiService, {
+    timeout: 120000,
+  }),
+);
 
 // -------------------------------------------------------------
 // Root Health Check

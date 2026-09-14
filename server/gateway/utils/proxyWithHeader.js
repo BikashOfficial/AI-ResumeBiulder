@@ -4,15 +4,16 @@ export const proxyWithHeader = (serviceUrl, options = {}) => {
   const cleanUrl = (serviceUrl || "").replace(/\/$/, "");
 
   return proxy(cleanUrl, {
-    timeout: 60000,
+    timeout: 90000,
     ...options,
     proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
       if (options.proxyReqOptDecorator) {
         proxyReqOpts = options.proxyReqOptDecorator(proxyReqOpts, srcReq);
       }
       // Overwrite x-user-id with authenticated user's ID from Redis session
-      if (srcReq.user?.userId) {
-        proxyReqOpts.headers["x-user-id"] = srcReq.user.userId;
+      const userId = srcReq.user?.userId || srcReq.user?._id || srcReq.user?.id;
+      if (userId) {
+        proxyReqOpts.headers["x-user-id"] = userId.toString();
       }
       return proxyReqOpts;
     },

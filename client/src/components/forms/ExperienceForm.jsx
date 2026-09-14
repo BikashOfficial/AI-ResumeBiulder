@@ -5,8 +5,6 @@ import api from '../../config/api'
 
 const ExperienceForm = ({ data, onChange }) => {
 
-    const { token } = useSelector(state => state.auth)
-
     const [isGeneratingIdx, setIsGeneratingIdx] = useState(-1)
 
     const addExperience = () => {
@@ -40,7 +38,7 @@ const ExperienceForm = ({ data, onChange }) => {
         const prompt = `just enhance this job description don't add the role in top - "${experience.description}" for the position of ${experience.position} at ${experience.company}`
 
         try {
-            const { data } = await api.post('/api/ai/enhance-job-desc', { userContent: prompt }, { headers: { Authorization: token } })
+            const { data } = await api.post('/api/ai/enhance-job-desc', { userContent: prompt })
             const enhancedText = (data.enhancedContent).trim()
             updateExperience(idx, "description",enhancedText)
         } catch (error) {

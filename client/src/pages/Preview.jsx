@@ -32,11 +32,8 @@ const Preview = ({ }) => {
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      loadResume()
-    }, 3000)
-
-  }, [resumeData])
+    loadResume()
+  }, [resumeId])
 
   const downloadResume = () => {
     window.print();

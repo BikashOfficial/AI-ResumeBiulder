@@ -5,8 +5,6 @@ import api from '../../config/api'
 
 const ProjectForm = ({ data, onChange }) => {
 
-  const { token } = useSelector(state => state.auth)
-
   const [isGeneratingIdx, setIsGeneratingIdx] = useState(-1)
 
   const addProject = () => {
@@ -37,7 +35,7 @@ const ProjectForm = ({ data, onChange }) => {
     const prompt = `just enhance this project description don't add the project name in top - "${project.description}" the name of project is ${project.name}`
 
     try {
-      const { data } = await api.post('/api/ai/enhance-project-desc', { userContent: prompt }, { headers: { Authorization: token } })
+      const { data } = await api.post('/api/ai/enhance-project-desc', { userContent: prompt })
       const enhancedText = (data.enhancedContent).trim()
       updateProject(idx, "description", enhancedText)
     } catch (error) {

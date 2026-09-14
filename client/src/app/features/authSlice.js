@@ -10,17 +10,17 @@ const authSlice = createSlice({
 
   reducers: {
     login: (state, action) => {
-      state.token = action.payload.token;
+      state.token = action.payload?.token || null;
       state.user = action.payload.user;
     },
     logout: (state) => {
-      state.token = "";
+      state.token = null;
       state.user = null;
-      localStorage.removeItem('token')
+      localStorage.removeItem('token');
     },
-    setLoading: (state,action) =>{
-        state.loading = action.payload
-    }
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
 });
 

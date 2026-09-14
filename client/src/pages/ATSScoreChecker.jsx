@@ -16,7 +16,6 @@ import toast from "react-hot-toast";
 export default function ATSScoreChecker() {
 
   const navigate = useNavigate();
-  const { token } = useSelector(state => state.auth);
 
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
@@ -73,8 +72,7 @@ export default function ATSScoreChecker() {
       // Call ATS API endpoint
       const { data } = await api.post(
         '/api/ai/ats',
-        { resumeText, jobDesc: jobDescription },
-        { headers: { Authorization: token } }
+        { resumeText, jobDesc: jobDescription }
       );
 
       // Set the results from the API
@@ -89,7 +87,12 @@ export default function ATSScoreChecker() {
       toast.success("ATS Analysis Complete!");
     } catch (error) {
       console.error("ATS Analysis Error:", error);
-      toast.error(error?.response?.data?.message || "Failed to analyze resume");
+      const isBadGateway = error?.response?.status === 502;
+      toast.error(
+        isBadGateway
+          ? "AI service was sleeping on Render and is warming up. Please try again in a few seconds!"
+          : error?.response?.data?.message || "Failed to analyze resume"
+      );
     } finally {
       setIsAnalyzing(false);
     }

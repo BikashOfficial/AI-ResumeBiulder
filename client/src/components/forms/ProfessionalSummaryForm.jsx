@@ -6,15 +6,13 @@ import toast from 'react-hot-toast'
 
 const ProfessionalSummaryForm = ({ data, onChange, setResumeData }) => {
 
-    const { token } = useSelector(state => state.auth)
-
     const [isGenerating, setIsGenerating] = useState(false)
 
     const generateSummary = async () => {
         try {
             setIsGenerating(true)
             const prompt = `enhance my professional summary - "${data}"`
-            const response = await api.post('/api/ai/enhance-pro-sum', { userContent: prompt }, { headers: { Authorization: token } })
+            const response = await api.post('/api/ai/enhance-pro-sum', { userContent: prompt })
             setResumeData(prev => ({ ...prev, professional_summary: response.data.enhancedContent }))
         } catch (error) {
             toast.error(error?.response?.data?.message || error.message)

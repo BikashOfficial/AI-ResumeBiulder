@@ -11,14 +11,19 @@ import ExperienceForm from '../components/forms/ExperienceForm'
 import EducationForm from '../components/forms/EducationForm'
 import ProjectForm from '../components/forms/ProjectForm'
 import SkillsForm from '../components/forms/SkillsForm'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import api from '../config/api'
 import toast from 'react-hot-toast'
+import {
+  setCurrentResume,
+  updateCurrentResume,
+  updateResumeInList,
+} from '../app/features/resumeSlice'
 
 const ResumeBuilder = () => {
 
   const { resumeId } = useParams()
-  const { token } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
 
   const [resumeData, setResumeData] = useState({
     _id: '',
@@ -36,9 +41,10 @@ const ResumeBuilder = () => {
 
   const loadExistingResume = async () => {
     try {
-      const { data } = await api.get(`/api/resumes/get/${resumeId}`, { headers: { Authorization: token } })
+      const { data } = await api.get(`/api/resumes/get/${resumeId}`)
       if (data.resume) {
         setResumeData(data.resume)
+        dispatch(setCurrentResume(data.resume))
         document.title = data.resume.title
       }
     } catch (error) {
@@ -71,9 +77,12 @@ const ResumeBuilder = () => {
       formData.append('resumeId', resumeId)
       formData.append('resumeData', JSON.stringify({ public: !resumeData.public }))
 
-      const { data } = await api.put('/api/resumes/update', formData, { headers: { Authorization: token } })
-      setResumeData({ ...resumeData, public: !resumeData.public })
-      const toastMessage = resumeData.public === true ? 'private' : 'public'
+      const { data } = await api.put('/api/resumes/update', formData)
+      const updatedPublic = !resumeData.public
+      setResumeData({ ...resumeData, public: updatedPublic })
+      dispatch(updateCurrentResume({ public: updatedPublic }))
+      dispatch(updateResumeInList({ id: resumeId, public: updatedPublic }))
+      const toastMessage = updatedPublic === true ? 'private' : 'public'
       toast.success(`Resume is now ${toastMessage}`)
     } catch (error) {
       console.log(error.message)
@@ -95,8 +104,10 @@ const ResumeBuilder = () => {
       removeBg && formData.append('removeBg', 'yes')
       typeof resumeData.personal_info.image === 'object' && formData.append('image', resumeData.personal_info.image)
 
-      const { data } = await api.put('/api/resumes/update', formData, { headers: { Authorization: token } })
+      const { data } = await api.put('/api/resumes/update', formData)
       setResumeData(data.resume)
+      dispatch(setCurrentResume(data.resume))
+      dispatch(updateResumeInList({ id: resumeId, ...data.resume }))
       toast.success(data.message)
     } catch (error) {
       console.log("Erroe while saving : ", error.message)
