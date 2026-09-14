@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes,Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Layout from './pages/Layout'
 import Dashboard from './pages/Dashboard'
@@ -12,6 +12,7 @@ import { Toaster } from 'react-hot-toast'
 import ATSScoreChecker from './pages/ATSScoreChecker.jsx'
 import Login from './pages/Login.jsx'
 import LoginLoading from './components/LoginLoading.jsx'
+// import {Routes, Route, } from "react-router-dom";
 
 const App = () => {
 
@@ -38,16 +39,44 @@ const App = () => {
   return (
     <>
       <Toaster />
+
       <Routes>
-        
-        <Route path='/' element={<Home />} />
-        
-        <Route path='app' element={loading ? <LoginLoading /> : (user ? <Layout /> : <Login />)}>
+
+        {/* Home page */}
+        <Route
+          path="/"
+          element={
+            loading ? (
+              <LoginLoading />
+            ) : user ? (
+              <Navigate to="/app" replace />
+            ) : (
+              <Home />
+            )
+          }
+        />
+
+        {/* App */}
+        <Route
+          path="/app"
+          element={
+            loading ? (
+              <LoginLoading />
+            ) : user ? (
+              <Layout />
+            ) : (
+              <Login />
+            )
+          }
+        >
           <Route index element={<Dashboard />} />
-          <Route path='builder/:resumeId' element={<ResumeBuilder />} />
-          <Route path='ats' element={<ATSScoreChecker/>} />
+          <Route path="builder/:resumeId" element={<ResumeBuilder />} />
+          <Route path="ats" element={<ATSScoreChecker />} />
         </Route>
-        <Route path='view/:resumeId' element={<Preview />} />
+
+        {/* Resume preview */}
+        <Route path="/view/:resumeId" element={<Preview />} />
+
       </Routes>
     </>
   )
